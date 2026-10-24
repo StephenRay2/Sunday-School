@@ -1,12 +1,5 @@
-const pollKey = 'sunday-school-topic-vote-v1';
-const topics = [
-    { id: 'calling', title: 'Jeremiah’s calling' },
-    { id: 'covenant', title: 'Covenants and returning to God' },
-    { id: 'worship', title: 'Worship, justice, and daily life' },
-    { id: 'sabbath', title: 'Keeping the Sabbath' },
-    { id: 'potter', title: 'The potter and the clay' },
-    { id: 'courage', title: 'Courage through opposition' }
-];
+const voterIdKey = 'sunday-school-voter-id-v1';
+const topics = new Set(['calling', 'covenant', 'worship', 'sabbath', 'potter', 'courage']);
 
 const form = document.querySelector('#vote-form');
 const options = document.querySelector('#topic-options');
@@ -16,62 +9,100 @@ const results = document.querySelector('#vote-results');
 const resultsList = document.querySelector('#results-list');
 const resultsTotal = document.querySelector('#results-total');
 const continueLink = document.querySelector('.vote-continue');
+const resetButton = document.querySelector('#reset-votes');
+let voterId;
 
-function getSavedVote() {
+function getVoterId() {
     try {
-        const savedVote = window.localStorage.getItem(pollKey);
-        if (!savedVote) return null;
-
-        const vote = JSON.parse(savedVote);
-        return topics.some((topic) => topic.id === vote.topicId) ? vote : null;
+        let id = window.localStorage.getItem(voterIdKey);
+        if (!id) {
+            id = window.crypto.randomUUID();
+            window.localStorage.setItem(voterIdKey, id);
+        }
+        return id;
     } catch {
-        message.textContent = 'Your browser could not access saved poll data. Please enable local storage to vote.';
+        message.textContent = 'This poll needs browser storage to remember your anonymous voter ID. Please enable local storage.';
         options.disabled = true;
         submitButton.disabled = true;
         return null;
     }
 }
 
-function showResults(vote) {
-    const voteCounts = new Map(topics.map((topic) => [topic.id, 0]));
-    voteCounts.set(vote.topicId, 1);
-    const totalVotes = 1;
-
-    const leaders = topics
-        .map((topic, index) => ({ ...topic, count: voteCounts.get(topic.id), index }))
-        .sort((first, second) => second.count - first.count || first.index - second.index)
-        .slice(0, 3);
-
-    resultsList.replaceChildren(...leaders.map((topic) => {
+function showResults(data) {
+    resultsList.replaceChildren(...data.topics.map((topic) => {
         const item = document.createElement('li');
         const label = document.createElement('span');
         const tally = document.createElement('span');
         label.textContent = topic.title;
-        tally.textContent = `${topic.count} ${topic.count === 1 ? 'vote' : 'votes'} · ${Math.round(topic.count / totalVotes * 100)}%`;
+        tally.textContent = `${topic.votes} ${topic.votes === 1 ? 'vote' : 'votes'} · ${topic.percentage}%`;
         item.append(label, tally);
         return item;
     }));
-    resultsTotal.textContent = `Total voters recorded on this browser: ${totalVotes}`;
+    resultsTotal.textContent = `Total voters: ${data.totalVotes}`;
     results.hidden = false;
     form.hidden = true;
     continueLink.focus({ preventScroll: true });
 }
 
-const savedVote = getSavedVote();
-if (savedVote) showResults(savedVote);
+async function loadResults() {
+    try {
+        const response = await fetch(`/api/results?voterId=${encodeURIComponent(voterId)}`);
+        if (!response.ok) throw new Error(`Results request failed (${response.status}).`);
+        const data = await response.json();
+        if (data.voted) showResults(data);
+    } catch {
+        message.textContent = 'Could not connect to the poll server. Your vote has not been submitted.';
+    }
+}
 
-form.addEventListener('submit', (event) => {
+voterId = getVoterId();
+if (voterId) loadResults();
+
+resetButton.addEventListener('click', async () => {
+    const confirmed = window.confirm('Warning: this will permanently delete all poll votes and reset the results for everyone. This cannot be undone. Continue?');
+    if (!confirmed) return;
+
+    resetButton.disabled = true;
+    try {
+        const response = await fetch('/api/reset', {
+            method: 'POST'
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || `Reset request failed (${response.status}).`);
+        window.alert('All votes have been reset.');
+        window.location.reload();
+    } catch (error) {
+        window.alert(error.message || 'Could not reset votes. Please try again.');
+        resetButton.disabled = false;
+    }
+});
+
+form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const selectedTopic = new FormData(form).get('topic');
-    if (!topics.some((topic) => topic.id === selectedTopic)) {
+    const topicId = new FormData(form).get('topic');
+    if (!topics.has(topicId)) {
         message.textContent = 'Please choose a topic before submitting your vote.';
         return;
     }
 
+    if (!voterId) return;
+    submitButton.disabled = true;
+    message.textContent = 'Submitting your vote…';
     try {
-        window.localStorage.setItem(pollKey, JSON.stringify({ topicId: selectedTopic }));
-        showResults({ topicId: selectedTopic });
+        const response = await fetch('/api/vote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ voterId, topicId })
+        });
+        const data = await response.json();
+        if (response.status === 409) {
+            showResults(data.results);
+            return;
+        }
+        if (!response.ok) throw new Error(data.error || `Vote request failed (${response.status}).`);
+        showResults(data.results);
     } catch {
-        message.textContent = 'Your vote could not be saved. Please enable local storage and try again.';
+        message.textContent = 'Your vote could not be submitted. Please check your connection and try again.';
+        submitButton.disabled = false;
     }
 });
