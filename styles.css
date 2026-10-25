@@ -49,12 +49,48 @@ blockquote {
 }
 
 .landing-page {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, min(52vw, 760px)) minmax(0, 1fr);
     align-items: center;
     justify-items: center;
     gap: clamp(16px, 2.5vw, 40px);
     padding: 32px;
+}
+
+.qrcode-link {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border: 1px solid rgba(166, 110, 53, 0.28);
+    border-radius: 999px;
+    color: var(--ink);
+    background: rgba(251, 249, 244, 0.94);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(51, 43, 31, 0.08);
+    transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.qrcode-link span {
+    color: var(--accent);
+}
+
+.qrcode-link:hover {
+    transform: translateY(-2px);
+    border-color: rgba(166, 110, 53, 0.55);
+    color: var(--accent-dark);
+}
+
+.qrcode-link:focus-visible {
+    outline: 3px solid rgba(166, 110, 53, 0.5);
+    outline-offset: 4px;
 }
 
 .landing-image {
@@ -99,6 +135,31 @@ blockquote {
     overflow: hidden;
     padding: 72px 32px 42px;
     text-align: center;
+}
+
+.qrcode-card {
+    width: min(100%, 760px);
+}
+
+.qrcode-card h1 {
+    max-width: 14ch;
+    margin-bottom: 8px;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+}
+
+.qrcode-image {
+    display: block;
+    width: min(62%, 390px);
+    aspect-ratio: 1;
+    margin: 12px auto 0;
+    border: 10px solid #fff;
+    border-radius: 12px;
+    object-fit: contain;
+    box-shadow: 0 12px 36px rgba(51, 43, 31, 0.12);
+}
+
+.qrcode-card .scriptures-link {
+    margin-top: 24px;
 }
 
 .landing-card::before,
@@ -569,6 +630,11 @@ blockquote {
         padding: 0;
     }
 
+    .qrcode-link {
+        top: 20px;
+        right: 20px;
+    }
+
     .landing-image {
         display: none;
     }
@@ -581,6 +647,15 @@ blockquote {
 
     .landing-card h1 {
         font-size: clamp(2.8rem, 8vw, 4.2rem);
+    }
+
+    .qrcode-card {
+        min-height: min(700px, calc(100vh - 48px));
+        padding-top: 84px;
+    }
+
+    .qrcode-image {
+        width: min(72%, 390px);
     }
 }
 
@@ -603,12 +678,37 @@ blockquote {
         letter-spacing: 0.12em;
     }
 
+    .qrcode-link {
+        top: 12px;
+        right: 12px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
     .landing-subtitle {
         font-size: 0.9rem;
     }
 
     .scriptures-link {
         margin-top: 52px;
+        font-size: 1.3rem;
+    }
+
+    .qrcode-card {
+        min-height: min(680px, calc(100vh - 32px));
+        padding: 76px 20px 32px;
+    }
+
+    .qrcode-card h1 {
+        font-size: clamp(2rem, 9vw, 3rem);
+    }
+
+    .qrcode-image {
+        width: min(84%, 340px);
+    }
+
+    .qrcode-card .scriptures-link {
+        margin-top: 22px;
         font-size: 1.3rem;
     }
 
