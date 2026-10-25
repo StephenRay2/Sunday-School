@@ -50,17 +50,17 @@ blockquote {
 
 .landing-page {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, min(55vw, 780px)) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, min(52vw, 760px)) minmax(0, 1fr);
     align-items: center;
     justify-items: center;
-    gap: clamp(12px, 2vw, 32px);
+    gap: clamp(16px, 2.5vw, 40px);
     padding: 32px;
 }
 
 .landing-image {
     display: block;
-    width: min(25vw, 280px);
-    height: min(62vh, 560px);
+    width: min(20vw, 250px);
+    height: min(58vh, 520px);
     max-width: 100%;
     border: 1px solid rgba(166, 110, 53, 0.2);
     border-radius: 18px;
@@ -92,7 +92,7 @@ blockquote {
     grid-column: 2;
     grid-row: 1;
     display: flex;
-    min-height: min(680px, calc(100vh - 64px));
+    min-height: min(640px, calc(100vh - 64px));
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -134,8 +134,9 @@ blockquote {
 }
 
 .landing-card h1 {
+    max-width: 12ch;
     margin: 18px 0 4px;
-    font-size: clamp(3.3rem, 9vw, 5.2rem);
+    font-size: clamp(3rem, 6vw, 4.6rem);
     font-weight: 500;
     letter-spacing: -0.055em;
     line-height: 1.04;
@@ -157,12 +158,11 @@ blockquote {
 }
 
 .scriptures-link {
-    position: absolute;
     z-index: 1;
-    bottom: 38px;
     display: inline-flex;
     align-items: center;
     gap: 14px;
+    margin-top: clamp(36px, 8vh, 76px);
     padding: 12px 0;
     color: var(--ink);
     font-size: 1.5rem;
@@ -198,6 +198,63 @@ blockquote {
 .scripture-index {
     width: min(100%, 1120px);
     background: rgba(251, 249, 244, 0.94);
+}
+
+.topic-introduction {
+    margin: -8px 0 26px;
+    padding: 20px 24px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 14px;
+    background: #fffefa;
+}
+
+.topic-introduction h2 {
+    margin: 0;
+    color: var(--accent-dark);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.topic-discuss-label {
+    margin-top: 12px;
+}
+
+.topic-introduction ul {
+    display: grid;
+    gap: 6px;
+    margin: 8px 0 0;
+    padding-left: 22px;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+.topic-introduction li {
+    padding-left: 3px;
+}
+
+.topic-introduction li:not(.topic-or) {
+    color: var(--ink);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.15rem, 2.7vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+.topic-introduction li:last-child {
+    list-style: none;
+}
+
+.topic-introduction li.topic-or {
+    color: var(--accent-dark);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    list-style: none;
+    text-transform: uppercase;
 }
 
 .back-link {
@@ -410,31 +467,58 @@ blockquote {
     font-size: 0.9rem;
 }
 
-@media (max-width: 540px) {
+@media (max-width: 900px) {
     body {
-        padding: 20px 14px;
+        padding: 24px 16px;
     }
 
     .landing-page {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
-        gap: 8px;
-        padding: 14px 8px;
+        display: flex;
+        justify-content: center;
+        padding: 0;
     }
 
     .landing-image {
-        width: min(25vw, 280px);
-        height: min(42vh, 360px);
-        border-radius: 12px;
+        display: none;
     }
 
     .landing-card {
-        min-height: calc(100vh - 28px);
-        padding-inline: 12px;
+        width: min(100%, 680px);
+        min-height: min(580px, calc(100vh - 48px));
+        padding: clamp(40px, 8vw, 72px) clamp(24px, 7vw, 52px);
     }
 
     .landing-card h1 {
-        font-size: clamp(1.7rem, 7vw, 3rem);
-        overflow-wrap: anywhere;
+        font-size: clamp(2.8rem, 8vw, 4.2rem);
+    }
+}
+
+@media (max-width: 540px) {
+    body {
+        padding: 16px 12px;
+    }
+
+    .landing-card {
+        min-height: min(560px, calc(100vh - 32px));
+        padding: 48px 24px 36px;
+    }
+
+    .landing-card h1 {
+        font-size: clamp(2.5rem, 11vw, 3.5rem);
+    }
+
+    .landing-card .eyebrow {
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+    }
+
+    .landing-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .scriptures-link {
+        margin-top: 52px;
+        font-size: 1.3rem;
     }
 
     .page-shell {
