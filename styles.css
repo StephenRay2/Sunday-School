@@ -546,6 +546,29 @@ blockquote {
     background: rgba(251, 249, 244, 0.94);
 }
 
+.study-note {
+    margin-top: 24px;
+    padding: clamp(20px, 4vw, 30px);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fffefa;
+}
+
+.study-note img {
+    display: block;
+    width: min(100%, 360px);
+    max-height: 260px;
+    margin: 0 auto 18px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.study-note p {
+    margin: 0;
+    color: #36414a;
+    line-height: 1.6;
+}
+
 .passage-card {
     margin-top: 42px;
     padding: clamp(26px, 6vw, 48px);
@@ -610,6 +633,23 @@ blockquote {
     background: #fffefa;
 }
 
+.reflection-card {
+    margin-top: 24px;
+    padding: clamp(20px, 4vw, 30px);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 14px;
+    background: #fffefa;
+}
+
+.reflection-card p {
+    margin: 0;
+    color: #36414a;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.15rem, 2.8vw, 1.5rem);
+    line-height: 1.45;
+}
+
 .questions-card h2 {
     margin: 0;
     color: var(--accent-dark);
@@ -617,6 +657,14 @@ blockquote {
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
+}
+
+.questions-card ul {
+    display: grid;
+    gap: 1em;
+    margin: 16px 0 0;
+    padding-left: 22px;
+    line-height: 1.6;
 }
 
 @media (max-width: 900px) {
